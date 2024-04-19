@@ -20,17 +20,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 import os
-SECRET_KEY = 'ewqeqeqe'
-# SECRET_KEY = os.getenv('SECRET_KEY')
+
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'JanVanAik.pythonanywhere.com,']
-
-
 
 # Application definition
 
@@ -70,12 +68,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
 
-
 ]
-
-
-
-
 
 ROOT_URLCONF = 'ShopProject.urls'
 
@@ -103,10 +96,23 @@ WSGI_APPLICATION = 'ShopProject.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'JanVanAik$default',
+        'USER': 'JanVanAik',
+        'PASSWORD': os.getenv('MYSQL_PASSWORD'),
+        'HOST': 'JanVanAik.mysql.pythonanywhere-services.com',
+        'OPTIONS': {
+            'init_command': "SET NAMES 'utf8mb4';SET sql_mode = 'STRICT_TRANS_TABLES'",
+            'charset': 'utf8mb4',
+        },
     }
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 # mysqlclient
 # python-dotenv
 
@@ -202,6 +208,8 @@ SOCIALACCOUNT_PROVIDERS = {
 if DEBUG:
     def show_toolbar(request):
         return True
+
+
     DEBUG_TOOLBAR_CONFIG = {
         'SHOW_TOOLBAR_CALLBACK': show_toolbar,
     }
@@ -222,9 +230,11 @@ if DEBUG:
     ]
     from django.utils.deprecation import MiddlewareMixin
 
+
     class DisableCSRF(MiddlewareMixin):
         def process_request(self, request):
             setattr(request, '_dont_enforce_csrf_checks', True)
+
 
     DEBUG_TOOLBAR_PATCH_SETTINGS = False
     INTERNAL_IPS = ('127.0.0.1',)
